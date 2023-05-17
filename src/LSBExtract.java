@@ -8,7 +8,6 @@ public class LSBExtract {
     static int width, height;
     static File file;
     static BufferedImage image;
-    static String message;
     static String key;
     static int keyLength;
     static int[] pixel;
