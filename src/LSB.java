@@ -37,7 +37,7 @@ public class LSB {
     }
 
     static void input(Scanner scanner) throws IOException {
-        file = new File("/home/hai/Pictures/Picture/404.jpg");
+        file = new File("/home/hai/Pictures/Picture/tree.png");
         image = ImageIO.read(file);
         System.out.print("Message: ");
         message = scanner.nextLine().concat("`");
@@ -80,14 +80,14 @@ public class LSB {
                 //Giau tin
                 red[j] = ((red[j] >> 1) << 1) + bit[++k];
                 green[j] = ((green[j] >> 1) << 1) + bit[++k];
-                if(k < 7){
+                if (k < 7) {
                     blue[j] = ((blue[j] >> 1) << 1) + bit[++k];
                 }
                 pixel[j] = (alpha[j] << 24) | (red[j] << 16) | (green[j] << 8) | blue[j];
                 image.setRGB(xP, yP, pixel[j]);
             }
         }
-        file = new File("/home/hai/Pictures/Picture/lsb.jpg");
+        file = new File("/home/hai/Pictures/Picture/lsb.png");
         ImageIO.write(image, "png", file);
         image.flush();
     }
