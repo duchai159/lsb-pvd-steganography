@@ -76,15 +76,15 @@ public class PVD {
                     if (m > numBit) {
                         m = numBit;
                     }
-                    int bit = 0;
+                    int dec = 0;
                     for (int k = 0; k < m; k++) {
                         if (binary.get(k + iMessage) == 1) {
-                            bit += Math.pow(2, k);
+                            dec += Math.pow(2, k);
                         }
                     }
                     iMessage += m;
                     numBit -= m;
-                    diffNew = L + bit;
+                    diffNew = L + dec;
                     int round = Math.round((float) Math.abs(diffNew - diff) / 2);
                     int floor = (int) Math.floor((float) Math.abs(diffNew - diff) / 2);
                     if (r1 >= r2 && diffNew > diff) {

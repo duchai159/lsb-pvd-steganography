@@ -17,7 +17,6 @@ public class PVDExtract {
     static int m;
     static int L, U;
     static int iMessage = 0;
-    static int cnt;
     static int iBit = 0;
 
     static void input() throws IOException {
