@@ -22,18 +22,24 @@ public class PVD {
     static int m;
     static int L, U;
     static int iMessage = 0;
-
+    static String key;
+    static int keyLength;
+    static int iKey = -1;
+    static int keyChar;
     static void init() {
         width = image.getWidth();
         height = image.getHeight();
     }
 
     static void input(Scanner scanner) throws IOException {
-        file = new File("/home/hai/Pictures/Picture/tree.png");
+        file = new File("/home/hai/Pictures/Picture/cute.jpg");
         image = ImageIO.read(file);
         System.out.print("Message: ");
         message = scanner.nextLine().concat("`");
         messageLength = message.length();
+//        System.out.print("Key: ");
+//        key = scanner.nextLine();
+//        keyLength = key.length();
     }
 
     static int process(int range) {
@@ -55,7 +61,7 @@ public class PVD {
         numBit = binary.size();
         outerLoop:
         for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j += 2) {
+            for (int j = 0; j < width - 1; j += 2) {
                 //pixel 1
                 p1 = image.getRGB(j, i);
                 r1 = (p1 >> 16) & 0xff;
@@ -82,6 +88,11 @@ public class PVD {
                             dec += Math.pow(2, k);
                         }
                     }
+                    //encode
+//                    iKey = (iKey + 1) % keyLength;
+//                    keyChar = key.charAt(iKey);
+//                    dec = (dec + keyChar) % 256;
+                    //encode
                     iMessage += m;
                     numBit -= m;
                     diffNew = L + dec;
@@ -114,7 +125,7 @@ public class PVD {
             }
 
         }
-        file = new File("/home/hai/Pictures/Picture/pvd.png");
+        file = new File("/home/hai/Pictures/Picture/pvd.jpg");
         ImageIO.write(image, "png", file);
     }
 

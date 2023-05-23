@@ -3,6 +3,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class PVDExtract {
     static int[] lower = {0, 2, 6, 12, 20, 30, 42, 56, 72, 90, 110, 132, 156, 182, 210, 240};
@@ -18,10 +19,17 @@ public class PVDExtract {
     static int L, U;
     static int iMessage = 0;
     static int iBit = 0;
+    static String key;
+    static int keyLength;
+    static int iKey = -1;
+    static int keyChar;
 
-    static void input() throws IOException {
-        file = new File("/home/hai/Pictures/Picture/pvd.png");
+    static void input(Scanner scanner) throws IOException {
+        file = new File("/home/hai/Pictures/Picture/pvd.jpg");
         image = ImageIO.read(file);
+//        System.out.print("Key: ");
+//        key = scanner.nextLine();
+//        keyLength = key.length();
     }
 
     static void init() {
@@ -41,7 +49,7 @@ public class PVDExtract {
     static void solve() {
         outerLoop:
         for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j += 2) {
+            for (int j = 0; j < width - 1; j += 2) {
                 //pixel 1
                 p1 = image.getRGB(j, i);
                 r1 = (p1 >> 16) & 0xff;
@@ -60,6 +68,11 @@ public class PVDExtract {
                 if (m != 0) {
                     iMessage += m;
                     int dec = diff - L;
+                    //decode
+//                    iKey = (iKey + 1) % keyLength;
+//                    keyChar = key.charAt(iKey);
+//                    dec = (dec + (256 - keyChar)) % 256;
+                    //decode
                     for (int k = 0; k < m; k++) {
                         binary.add((dec >> k) & 1);
                     }
@@ -72,7 +85,8 @@ public class PVDExtract {
                     if ((char) plain == '`') {
                         break outerLoop;
                     }
-                    System.out.print((char) plain);
+                    System.out.println(plain);
+                    System.out.println((char) plain);
                     iMessage -= 8;
                     iBit += 8;
                 }
@@ -81,7 +95,8 @@ public class PVDExtract {
     }
 
     public static void main(String[] args) throws IOException {
-        input();
+        Scanner scanner = new Scanner(System.in);
+        input(scanner);
         init();
         solve();
     }

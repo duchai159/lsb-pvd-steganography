@@ -31,7 +31,7 @@ public class LSBExtract {
     }
 
     static void input(Scanner scanner) throws IOException {
-        file = new File("/home/hai/Pictures/Picture/lsb.png");
+        file = new File("/home/hai/Pictures/Picture/lsb.jpg");
         image = ImageIO.read(file);
         System.out.print("Key: ");
         key = scanner.nextLine();

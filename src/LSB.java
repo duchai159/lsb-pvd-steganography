@@ -37,7 +37,7 @@ public class LSB {
     }
 
     static void input(Scanner scanner) throws IOException {
-        file = new File("/home/hai/Pictures/Picture/tree.png");
+        file = new File("/home/hai/Pictures/Picture/cute.jpg");
         image = ImageIO.read(file);
         System.out.print("Message: ");
         message = scanner.nextLine().concat("`");
@@ -87,7 +87,7 @@ public class LSB {
                 image.setRGB(xP, yP, pixel[j]);
             }
         }
-        file = new File("/home/hai/Pictures/Picture/lsb.png");
+        file = new File("/home/hai/Pictures/Picture/lsb.jpg");
         ImageIO.write(image, "png", file);
         image.flush();
     }
