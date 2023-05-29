@@ -20,26 +20,42 @@ public class PVD {
     static int p1, r1, g1, b1;
     static int p2, r2, g2, b2;
     static int m;
-    static int L, U;
-    static int iMessage = 0;
+    static int iMessage;
     static String key;
     static int keyLength;
-    static int iKey = -1;
+    static int iKey;
     static int keyChar;
+    static int color;
+
     static void init() {
         width = image.getWidth();
         height = image.getHeight();
+        iMessage = 0;
+        iKey = -1;
+        color = -1;
+    }
+
+    static void encode() {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < messageLength; i++) {
+            int plain = message.charAt(i);
+            iKey = (iKey + 1) % keyLength;
+            keyChar = key.charAt(iKey);
+            plain = (plain + keyChar) % 256;
+            result.append((char) plain);
+        }
+        message = result.toString();
     }
 
     static void input(Scanner scanner) throws IOException {
-        file = new File("/home/hai/Pictures/Picture/cute.jpg");
+        file = new File("/home/hai/Pictures/Picture/tree.png");
         image = ImageIO.read(file);
         System.out.print("Message: ");
         message = scanner.nextLine().concat("`");
         messageLength = message.length();
-//        System.out.print("Key: ");
-//        key = scanner.nextLine();
-//        keyLength = key.length();
+        System.out.print("Key: ");
+        key = scanner.nextLine();
+        keyLength = key.length();
     }
 
     static int process(int range) {
@@ -49,6 +65,13 @@ public class PVD {
             }
         }
         return -1;
+    }
+
+    static int countBit(int diff) {
+        int index = process(diff);
+        int L = lower[index];
+        int U = upper[index];
+        return (int) Math.floor(Math.log(U - L) / Math.log(2));
     }
 
     static void solve() throws IOException {
@@ -62,23 +85,52 @@ public class PVD {
         outerLoop:
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width - 1; j += 2) {
+                m = 0;
                 //pixel 1
                 p1 = image.getRGB(j, i);
                 r1 = (p1 >> 16) & 0xff;
-                g1 = (p1 >> 16) & 0xff;
+                g1 = (p1 >> 8) & 0xff;
                 b1 = p1 & 0xff;
                 //pixel 2
                 p2 = image.getRGB(j + 1, i);
                 r2 = (p2 >> 16) & 0xff;
                 g2 = (p2 >> 8) & 0xff;
                 b2 = p2 & 0xff;
-                diff = Math.abs(r1 - r2);
-                int index = process(diff);
-                L = lower[index];
-                U = upper[index];
-                m = (int) Math.floor(Math.log(U - L) / Math.log(2));
+                int rDiff = Math.abs(r1 - r2);
+                int gDiff = Math.abs(g1 - g2);
+                int bDiff = Math.abs(b1 - b2);
+                int mRed = countBit(rDiff);
+                int mGreen = countBit(gDiff);
+                int mBlue = countBit(bDiff);
+                if (mRed > 0) {
+                    m = mRed;
+                    color = 0;
+                }
+                if (mGreen > 0 && mGreen > m) {
+                    m = mGreen;
+                    color = 1;
+                }
+                if (mBlue > 0 && mBlue > m) {
+                    m = mBlue;
+                    color = 2;
+                }
                 if (m != 0) {
-//                    System.out.print(m + " ");
+                    int c1, c2;
+                    if (color == 0) {
+                        c1 = r1;
+                        c2 = r2;
+                        diff = rDiff;
+                    }
+                    else if (color == 1) {
+                        c1 = g1;
+                        c2 = g2;
+                        diff = gDiff;
+                    }
+                    else {
+                        c1 = b1;
+                        c2 = b2;
+                        diff = bDiff;
+                    }
                     if (m > numBit) {
                         m = numBit;
                     }
@@ -88,34 +140,39 @@ public class PVD {
                             dec += Math.pow(2, k);
                         }
                     }
-                    //encode
-//                    iKey = (iKey + 1) % keyLength;
-//                    keyChar = key.charAt(iKey);
-//                    dec = (dec + keyChar) % 256;
-                    //encode
+                    int index = process(diff);
                     iMessage += m;
                     numBit -= m;
-                    diffNew = L + dec;
+                    diffNew = lower[index] + dec;
                     int round = Math.round((float) Math.abs(diffNew - diff) / 2);
                     int floor = (int) Math.floor((float) Math.abs(diffNew - diff) / 2);
-                    if (r1 >= r2 && diffNew > diff) {
-                        r1 = r1 + round;
-                        r2 = r2 - floor;
+                    if (c1 >= c2 && diffNew > diff) {
+                        c1 = c1 + round;
+                        c2 = c2 - floor;
                     }
-                    if (r1 < r2 && diffNew > diff) {
-                        r1 = r1 - round;
-                        r2 = r2 + floor;
+                    else if (c1 < c2 && diffNew > diff) {
+                        c1 = c1 - round;
+                        c2 = c2 + floor;
                     }
-                    if (r1 >= r2 && diffNew <= diff) {
-                        r1 = r1 - round;
-                        r2 = r2 + floor;
+                    else if (c1 >= c2 && diffNew <= diff) {
+                        c1 = c1 - round;
+                        c2 = c2 + floor;
                     }
-                    if (r1 < r2 && diffNew <= diff) {
-                        r1 = r1 + round;
-                        r2 = r2 - floor;
+                    else if (c1 < c2 && diffNew <= diff) {
+                        c1 = c1 + round;
+                        c2 = c2 - floor;
                     }
-                    p1 = (r1 << 16) | (g1 << 8) | b1;
-                    p2 = (r2 << 16) | (g2 << 8) | b2;
+                    if (color == 0) {
+                        p1 = (c1 << 16) | (g1 << 8) | b1;
+                        p2 = (c2 << 16) | (g2 << 8) | b2;
+                    } else if (color == 1) {
+                        p1 = (r1 << 16) | (c1 << 8) | b1;
+                        p2 = (r2 << 16) | (c2 << 8) | b2;
+                    } else {
+                        p1 = (r1 << 16) | (g1 << 8) | c1;
+                        p2 = (r2 << 16) | (g2 << 8) | c2;
+                    }
+
                     image.setRGB(j, i, p1);
                     image.setRGB(j + 1, i, p2);
                 }
@@ -133,6 +190,7 @@ public class PVD {
         Scanner scanner = new Scanner(System.in);
         input(scanner);
         init();
+        encode();
         solve();
     }
 }
