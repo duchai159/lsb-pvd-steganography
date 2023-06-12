@@ -58,9 +58,9 @@ public class PVD {
         keyLength = key.length();
     }
 
-    static int process(int range) {
+    static int process(int diff) {
         for (int i = 0; i < 16; i++) {
-            if (range >= lower[i] && range <= upper[i]) {
+            if (diff >= lower[i] && diff <= upper[i]) {
                 return i;
             }
         }
@@ -180,7 +180,6 @@ public class PVD {
                     break outerLoop;
                 }
             }
-
         }
         file = new File("/home/hai/Pictures/Picture/pvd.jpg");
         ImageIO.write(image, "png", file);

@@ -41,9 +41,9 @@ public class PVDExtract {
         color = -1;
     }
 
-    static int process(int range) {
+    static int process(int diff) {
         for (int i = 0; i < 16; i++) {
-            if (range >= lower[i] && range <= upper[i]) {
+            if (diff >= lower[i] && diff <= upper[i]) {
                 return i;
             }
         }

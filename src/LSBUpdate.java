@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class LSB {
+public class LSBUpdate {
     static File file;
     static BufferedImage image;
     static int width, height;
@@ -38,7 +38,7 @@ public class LSB {
     }
 
     static void input(Scanner scanner) throws IOException {
-        file = new File("/home/hai/Pictures/Picture/cute.jpg");
+        file = new File("/home/hai/Pictures/Picture/tree.png");
         image = ImageIO.read(file);
         System.out.print("Message: ");
         message = scanner.nextLine().concat("`");
@@ -48,46 +48,53 @@ public class LSB {
         keyLength = key.length();
     }
 
-    static void solve() throws IOException {
-        for (int i = 0; i < messageLength; i++) {
-            // Ma hoa ky tu
-            plain = message.charAt(i);
-            iKey = (iKey + 1) % keyLength;
-            keyChar = key.charAt(iKey);
-            plain = (plain + keyChar) % 256;
-            // Chuyen message vao mang bit
-            for (int j = bit.length - 1; j >= 0; j--) {
-                if (plain >= Math.pow(2, j)) {
-                    bit[j] = 1;
-                    plain -= Math.pow(2, j);
-                } else {
-                    bit[j] = 0;
-                }
-            }
-            // Giau tin vao 3 pixel
-            int k = -1;
-            for (int j = 0; j < 3; j++) {
-                xP++;
-                if (xP >= width) {
-                    xP = xP % width;
-                    yP++;
-                }
-                //Trich xuat
-                pixel[j] = image.getRGB(xP, yP);
-                red[j] = (pixel[j] >> 16) & 0xff;
-                green[j] = (pixel[j] >> 8) & 0xff;
-                blue[j] = pixel[j] & 0xff;
-                //Giau tin
-                red[j] = ((red[j] >> 1) << 1) + bit[++k];
-                green[j] = ((green[j] >> 1) << 1) + bit[++k];
-                if (k < 7) {
-                    blue[j] = ((blue[j] >> 1) << 1) + bit[++k];
-                }
-                pixel[j] =(red[j] << 16) | (green[j] << 8) | blue[j];
-                image.setRGB(xP, yP, pixel[j]);
+    static void encodeCharacter(char character) {
+        plain = character;
+        iKey = (iKey + 1) % keyLength;
+        keyChar = key.charAt(iKey);
+        plain = (plain + keyChar) % 256;
+
+        for (int j = bit.length - 1; j >= 0; j--) {
+            if (plain >= Math.pow(2, j)) {
+                bit[j] = 1;
+                plain -= Math.pow(2, j);
+            } else {
+                bit[j] = 0;
             }
         }
-        file = new File("/home/hai/Pictures/Picture/lsb.jpg");
+    }
+
+    static void hideMessageInPixel(int pixelIndex) {
+        xP++;
+        if (xP >= width) {
+            xP = xP % width;
+            yP++;
+        }
+
+        pixel[pixelIndex] = image.getRGB(xP, yP);
+        red[pixelIndex] = (pixel[pixelIndex] >> 16) & 0xff;
+        green[pixelIndex] = (pixel[pixelIndex] >> 8) & 0xff;
+        blue[pixelIndex] = pixel[pixelIndex] & 0xff;
+
+        red[pixelIndex] = ((red[pixelIndex] >> 1) << 1) + bit[pixelIndex * 3];
+        green[pixelIndex] = ((green[pixelIndex] >> 1) << 1) + bit[pixelIndex * 3 + 1];
+        if (pixelIndex * 3 + 2 < bit.length) {
+            blue[pixelIndex] = ((blue[pixelIndex] >> 1) << 1) + bit[pixelIndex * 3 + 2];
+        }
+
+        pixel[pixelIndex] = (red[pixelIndex] << 16) | (green[pixelIndex] << 8) | blue[pixelIndex];
+        image.setRGB(xP, yP, pixel[pixelIndex]);
+    }
+
+    static void solve() throws IOException {
+        for (int i = 0; i < messageLength; i++) {
+            encodeCharacter(message.charAt(i));
+            for (int j = 0; j < 3; j++) {
+                hideMessageInPixel(j);
+            }
+        }
+
+        file = new File("/home/hai/Pictures/Picture/lsb.png");
         ImageIO.write(image, "png", file);
         image.flush();
     }
