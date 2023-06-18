@@ -4,10 +4,9 @@ import java.io.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class LSBApp extends JFrame {
+public class PVDApp extends JFrame {
     String path = null;
     File selectedFile = null;
-    File selectedFile1 = null;
 
     JLabel lblTitle1 = new JLabel("Message:");
     JLabel lblTitle2 = new JLabel("Extracted message:");
@@ -30,7 +29,7 @@ public class LSBApp extends JFrame {
     JLabel keyLabel = new JLabel("Key");
     JLabel keyLabel1 = new JLabel("Key");
 
-    LSBApp() {
+    PVDApp() {
         setTitle("LSB Hiding");
         setSize(900, 600);
         setLayout(null);
@@ -130,10 +129,6 @@ public class LSBApp extends JFrame {
             // For storing image in RAM
             BufferedImage image;
             // Reading input file
-            if(selectedFile == null){
-                JOptionPane.showMessageDialog(LSBApp.this, "Please select an image!", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
             try {
                 image = ImageIO.read(selectedFile);
             } catch (IOException ex) {
@@ -152,7 +147,7 @@ public class LSBApp extends JFrame {
             // Start input message and key
             message = txtArea.getText();
             if(message.isEmpty()){
-                JOptionPane.showMessageDialog(LSBApp.this, "Please enter message!", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(PVDApp.this, "Vui long nhap message!", "Loi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             message = message.concat("`");// Ky tu bao hieu ket thuc thong diep
@@ -160,7 +155,7 @@ public class LSBApp extends JFrame {
 
             key = txtPass.getText();
             if(key.isEmpty()){
-                JOptionPane.showMessageDialog(LSBApp.this, "Please enter key!", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(PVDApp.this, "Vui long nhap khoa!", "Loi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             keyLength = key.length();
@@ -218,14 +213,14 @@ public class LSBApp extends JFrame {
             } catch (IOException ex) {
                 System.out.println("Error: " + ex);
             }
-            JOptionPane.showMessageDialog(LSBApp.this, "Message successfully hidden!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(PVDApp.this, "Giau tin thanh cong!", "Thong bao", JOptionPane.INFORMATION_MESSAGE);
         });// hiding
         select1.addActionListener(a -> {
             JFileChooser chooser = new JFileChooser();
             int option = chooser.showOpenDialog(select1);
             if (option == JFileChooser.APPROVE_OPTION) {
-                selectedFile1 = chooser.getSelectedFile();
-                path = selectedFile1.getAbsolutePath();
+                selectedFile = chooser.getSelectedFile();
+                path = selectedFile.getAbsolutePath();
                 ImageIcon imageIcon = new ImageIcon(path);
                 Image image = imageIcon.getImage().getScaledInstance(imgJLabel1.getWidth(), imgJLabel1.getHeight(), Image.SCALE_SMOOTH);
                 ImageIcon scaledIcon = new ImageIcon(image);
@@ -249,19 +244,15 @@ public class LSBApp extends JFrame {
             int plain;
             int keyChar;
             BufferedImage image;
-            if(selectedFile1 == null){
-                JOptionPane.showMessageDialog(LSBApp.this, "Please select an image!", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
             // Reading input file
             try {
-                image = ImageIO.read(selectedFile1);
+                image = ImageIO.read(selectedFile);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
             key = txtPass1.getText();
             if(key.isEmpty()){
-                JOptionPane.showMessageDialog(LSBApp.this, "Please enter key!", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(PVDApp.this, "Vui long nhap khoa!", "Loi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             keyLength = key.length();
@@ -325,6 +316,6 @@ public class LSBApp extends JFrame {
     }// constructor
 
     public static void main(String[] args) {
-        new LSBApp();
+        new PVDApp();
     }
 }

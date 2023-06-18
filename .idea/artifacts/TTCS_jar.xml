@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="TTCS:jar">
+    <output-path>$PROJECT_DIR$/..</output-path>
+    <root id="archive" name="TTCS.jar">
+      <element id="module-output" name="TTCS" />
+    </root>
+  </artifact>
+</component>
