@@ -31,7 +31,7 @@ public class LSBApp extends JFrame {
     JLabel keyLabel1 = new JLabel("Key");
 
     LSBApp() {
-        setTitle("LSB Hiding");
+        setTitle("Least Significant Bit");
         setSize(900, 600);
         setLayout(null);
         setVisible(true);
@@ -308,22 +308,7 @@ public class LSBApp extends JFrame {
                 txtArea2.setText(extractMessage);
             }
         });// extracting
-
-        SwingUtilities.invokeLater(() -> {
-            txtArea.setFont(new Font("Arial", Font.PLAIN, 12));
-            FontMetrics metrics = txtArea.getFontMetrics(txtArea.getFont());
-            int ascent = metrics.getAscent();
-            int height = metrics.getHeight();
-            txtArea.setMargin(new Insets(ascent, 0, height - ascent, 0));
-
-            txtArea2.setFont(new Font("Arial", Font.PLAIN, 12));
-            metrics = txtArea2.getFontMetrics(txtArea2.getFont());
-            ascent = metrics.getAscent();
-            height = metrics.getHeight();
-            txtArea2.setMargin(new Insets(ascent, 0, height - ascent, 0));
-        });
     }// constructor
-
     public static void main(String[] args) {
         new LSBApp();
     }
